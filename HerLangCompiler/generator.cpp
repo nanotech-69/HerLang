@@ -92,7 +92,6 @@ std::string generate_cpp(const AST& ast) {
     std::ostringstream out;
     out << "#include <iostream>\n#include <string>\n\n#ifdef _WIN32\n#include <windows.h>\n#endif\n\n";
 
-    // 先生成所有函数定义
     for (auto& stmt : ast.statements) {
         if (dynamic_cast<FunctionDef*>(stmt.get())) {
             gen_stmt(out, stmt, 0);
@@ -100,7 +99,6 @@ std::string generate_cpp(const AST& ast) {
         }
     }
 
-    // 再生成 start block
     for (auto& stmt : ast.statements) {
         if (dynamic_cast<StartBlock*>(stmt.get())) {
             gen_stmt(out, stmt, 0);

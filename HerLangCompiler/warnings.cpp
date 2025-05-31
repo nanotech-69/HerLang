@@ -10,7 +10,7 @@ void check_indentation(const std::string& source) {
     std::string line;
     int lineno = 1;
 
-    std::stack<int> indent_stack; // 缩进栈，记录每个代码块的基准缩进
+    std::stack<int> indent_stack;
 
     while (std::getline(in, line)) {
         std::string trimmed = trim(line);
@@ -40,13 +40,12 @@ void check_indentation(const std::string& source) {
         }
         else if (trimmed.find("function") == 0 || trimmed.find("start:") == 0 ||
             trimmed.find("if") == 0 || trimmed.find("elif") == 0 || trimmed.find("else") == 0) {
-            // 新代码块起始，压入当前行缩进
             indent_stack.push(indent);
         }
         else {
             if (!indent_stack.empty()) {
                 int expected_indent = indent_stack.top();
-                if (indent <= expected_indent) {  // 缩进要严格大于基准缩进
+                if (indent <= expected_indent) {
                     std::cerr << "[Warning] Line " << lineno << ": Inconsistent indentation. Expected greater than "
                         << expected_indent << " spaces but got " << indent << ".\n";
                 }

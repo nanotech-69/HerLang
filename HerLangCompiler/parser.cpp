@@ -16,7 +16,7 @@ static Token peek() {
 #if _DEBUG
         std::cerr << "[ERROR] peek: pos=" << pos << ", toks.size=" << toks.size() << "\n";
 #endif
-        return dummy_eof_token(); // 不再抛异常，返回 EOF
+        return dummy_eof_token();
     }
     auto t = toks[pos];
 #if _DEBUG
@@ -30,7 +30,7 @@ static Token advance() {
 #if _DEBUG
         std::cerr << "[ERROR] advance: pos=" << pos << ", toks.size=" << toks.size() << "\n";
 #endif
-        return dummy_eof_token(); // 不再抛异常
+        return dummy_eof_token();
     }
     auto t = toks[pos++];
 #if _DEBUG
@@ -39,7 +39,6 @@ static Token advance() {
     return t;
 }
 
-// 跳过连续空行
 static void skip_newlines() {
     while (peek().type == TokenType::Newline) {
         advance();
@@ -62,7 +61,7 @@ AST parse(const std::vector<Token>& tokens) {
             ast.statements.push_back(stmt);
         }
         else {
-            advance(); // 防止死循环
+            advance();
         }
     }
 
@@ -118,15 +117,13 @@ std::shared_ptr<Statement> parse_statement() {
         Token name = advance();
         Token maybe_param_or_colon = advance();
 
-        std::string param = "";  // 默认为空参数
+        std::string param = "";
 
         Token colon;
         if (maybe_param_or_colon.type == TokenType::Symbol && maybe_param_or_colon.value == ":") {
-            // 无参数函数
             colon = maybe_param_or_colon;
         }
         else {
-            // 有参数函数，接下来应该是冒号
             param = maybe_param_or_colon.value;
             colon = advance();
             if (colon.value != ":") {
@@ -176,21 +173,21 @@ std::shared_ptr<Statement> parse_statement() {
                 }
                 ending = advance().value;
 
-                break; // 结束 say 解析
+                break;
             }
 
             if (next.type == TokenType::Newline || next.type == TokenType::EOFToken) {
                 advance(); // consume newline/EOF
-                break;     // 正常结束 say
+                break;
             }
 
-            // 处理参数
+            
             if (next.type == TokenType::StringLiteral || next.type == TokenType::Identifier) {
                 Token arg = advance();
                 args.push_back(arg.value);
                 is_vars.push_back(arg.type == TokenType::Identifier);
 
-                // 可选逗号
+                
                 Token comma = peek();
                 if (comma.type == TokenType::Symbol && comma.value == ",") {
                     advance(); // consume comma
@@ -241,7 +238,6 @@ std::shared_ptr<Statement> parse_statement() {
     }
 
 
-    // 未知语句，跳过避免死循环
     advance();
     return nullptr;
 }
