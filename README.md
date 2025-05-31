@@ -1,5 +1,5 @@
 ![HerLang](/assets/logo.png)
-# HarLang - A code language for her.
+# HerLang - A code language for her.
 
 Programming is not a male privilege, girls can also program well.
 
