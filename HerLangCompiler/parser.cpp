@@ -92,7 +92,6 @@ std::vector<std::shared_ptr<Statement>> parse_block() {
             advance();
         }
 
-        // ·ÀÖ¹ËÀÑ­»·
         if (++safety_counter > 10000) {
             throw std::runtime_error("Too many statements parsed without encountering 'end'");
         }
